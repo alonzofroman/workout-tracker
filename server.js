@@ -1,9 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const logger = require('morgan');
-
-const apiRoutes = require('./routes/api');
-const homeRoutes = require('./routes/home');
+const routes = require('./routes');
 
 const PORT = process.env.PORT || 3000;
 
@@ -21,9 +19,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/workout', {
     useFindAndModify: false,
 });
 
-app.use(apiRoutes);
-app.use(homeRoutes);
-
+app.use(routes);
 
 
 app.listen(PORT, () => {
