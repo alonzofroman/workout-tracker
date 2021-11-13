@@ -1,27 +1,53 @@
 const router = require('express').Router();
-const Workout = require('../models/workout');
+// const Workout = require('../models/workout');
+const db = require('../models');
 
 // Get all workouts
-router.get('/workouts', (req, res) => {
-    Workout.aggregate([{$addFields: {totalDuration:{$sum:"$exercises.duration"}}}]).then(data => {
-        res.json(data);
-    }).catch(err => {
-        res.status(400).json(err);
-    });
-});
+// router.get('/workouts', (req, res) => {
+//     Workout.aggregate([{$addFields: {totalDuration:{$sum:"$exercises.duration"}}}]).then(data => {
+//         res.json(data);
+//         console.log(data);
+//     }).catch(err => {
+//         res.status(400).json(err);
+//     });
+// });
+
+router.get('/workouts', async (req, res) => {
+    try {
+        const workoutData = await db.Workout.aggregate([{
+            $addFields: {totalDuration:{$sum: "$exercises.duration"}}
+        }]);
+        res.status(200).json(workoutData);
+        console.log(workoutData);
+    } catch (err) {
+        res.status(500).json(err)
+    }
+}
+)
 
 // Create a workout
-router.post('/workouts/', (req, res) => {
-    Workout.create(req.body).then(data => {
+router.post('/workouts/', ({body}, res) => {
+    db.Workout.create(body).then(data => {
         res.json(data);
+        console.log(data);
     }).catch(err => {
         res.status(400).json(err);
     })
 });
 
+// router.post('/workouts', async (req, res) => {
+//     try {
+//         const workoutData = await Workout.create({});
+//         res.status(200).json(workoutData);
+//         console.log(workoutData);
+//     } catch (err) {
+//         res.status(500).json(err);
+//     }
+// })
+
 // Update a workout
 router.put('/workouts/:id', (req, res) => {
-    Workout.findByIdAndUpdate({_id: req.params.id}, {exercise: req.body}).then((data) => {
+    db.Workout.findByIdAndUpdate({_id: req.params.id}, {exercise: req.body}).then((data) => {
         res.json(data);
     }).catch(err => {
         res.json(err);
@@ -30,7 +56,7 @@ router.put('/workouts/:id', (req, res) => {
 
 // Get workouts in range
 router.get('/workouts/range', (req, res) => {
-    Workout.aggregate([{$addFields: {totalDuration: {$sum: "$exercises.duration"}}}]).limit(7).then(data => {
+    db.Workout.aggregate([{$addFields: {totalDuration: {$sum: "$exercises.duration"}}}]).limit(7).then(data => {
         res.json(data);
     }).catch(err => {
         res.json(err);
