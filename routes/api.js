@@ -8,29 +8,39 @@ router.get('/workouts', async (req, res) => {
         const workoutData = await db.Workout.aggregate([{
             $addFields: {totalDuration:{$sum: "$exercises.duration"}}
         }]);
-        res.status(200).json(workoutData);
-        console.log(workoutData);
+        res.json(workoutData);
+        // console.log(workoutData);
     } catch (err) {
-        res.status(500).json(err)
+        res.json(err)
     }
 }
 )
 
 // Create a workout
-router.post('/workouts/', ({body}, res) => {
-    db.Workout.create(body).then(data => {
-        res.json(data);
-        console.log(data);
-    }).catch(err => {
-        res.status(400).json(err);
-    })
+// router.post('/workouts', ({body}, res) => {
+//     db.Workout.create(body).then(workoutData => {
+//         res.json(workoutData);
+//         console.log(workoutData);
+//     }).catch(err => {
+//         res.json(err);
+//     })
+// });
+
+router.post('/workouts', async ({ body }, res)=> {
+    try {
+        const workoutData = await db.Workout.create(body);
+        console.log(workoutData);
+        res.status(200).json(workoutData);
+    } catch (err) {
+        res.status(500).json(err);
+    }
 });
 
 
 // Update a workout
 router.put('/workouts/:id', (req, res) => {
-    db.Workout.findByIdAndUpdate({_id: req.params.id}, {exercise: req.body}).then((data) => {
-        res.json(data);
+    db.Workout.findByIdAndUpdate({_id: req.params.id}, {exercise: req.body}).then((workoutData) => {
+        res.json(workoutData);
     }).catch(err => {
         res.json(err);
     })
@@ -38,8 +48,8 @@ router.put('/workouts/:id', (req, res) => {
 
 // Get workouts in range of 7 days
 router.get('/workouts/range', (req, res) => {
-    db.Workout.aggregate([{$addFields: {totalDuration: {$sum: "$exercises.duration"}}}]).limit(7).then(data => {
-        res.json(data);
+    db.Workout.aggregate([{$addFields: {totalDuration: {$sum: "$exercises.duration"}}}]).limit(7).then(workoutData => {
+        res.json(workoutData);
     }).catch(err => {
         res.json(err);
     })
