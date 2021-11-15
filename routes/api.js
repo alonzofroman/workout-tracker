@@ -19,7 +19,7 @@ router.get('/workouts', async (req, res) => {
 // Create a workout
 router.post('/workouts', (req, res) => {
     console.log(req.body);
-    db.Workout.create({}).then(workoutData => {
+    db.Workout.create(req.body).then(workoutData => {
         res.json(workoutData);
         console.log(workoutData);
     }).catch(err => {
@@ -27,20 +27,10 @@ router.post('/workouts', (req, res) => {
     })
 });
 
-// router.post('/workouts', async ({ body }, res)=> {
-//     try {
-//         const workoutData = await db.Workout.create(body);
-//         console.log(workoutData);
-//         res.status(200).json(workoutData);
-//     } catch (err) {
-//         res.status(500).json(err);
-//     }
-// });
-
 
 // Update a workout
 router.put('/workouts/:id', (req, res) => {
-    db.Workout.findByIdAndUpdate({_id: req.params.id}, {exercise: req.body}).then((workoutData) => {
+    db.Workout.findByIdAndUpdate(req.params.id, {$push: {exercises: req.body}}, {new:true, runValidators:true}).then((workoutData) => {
         res.json(workoutData);
     }).catch(err => {
         res.json(err);
@@ -49,7 +39,7 @@ router.put('/workouts/:id', (req, res) => {
 
 // Get workouts in range of 7 days
 router.get('/workouts/range', (req, res) => {
-    db.Workout.aggregate([{$addFields: {totalDuration: {$sum: "$exercises.duration"}}}]).limit(7).then(workoutData => {
+    db.Workout.aggregate([{$addFields: {totalDuration: {$sum: "$exercises.duration"}}}]).sort({_id: -1}).limit(7).then(workoutData => {
         res.json(workoutData);
     }).catch(err => {
         res.json(err);
