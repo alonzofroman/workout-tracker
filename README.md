@@ -5,12 +5,20 @@ Alonzo Roman
 
 ## Table of Contents
 * [Summary](#Summary)
+* [Deployed Link](#Deployed-Link)
+* [Screen Record](#Screen-Record)
 * [Code](#Code-Snippet)
 * [Technologies](#Technologies)
 * [Contact](#Contact-Links)
 
 ## Summary
 The purpose of this project is to create an application that can take workout or exercise information and track it by utilizing a MongoDB database. Users can create a new workout, complete and submit them, and update them using the features availabel on the webpage. Users can track workout names, types, sets, reps and duration using the features available.
+
+## Deployed Link
+- [Link](https://morning-stream-56566.herokuapp.com)
+
+## Screen Record
+![image](./assets/workout-record.gif)
 
 ## Code Snippet
 In order to acquire a sum of exercise duration to use in the total section of the page, I had to use aggregation, which allows a developer to group multiple values together. This was used in my api route to request workout data from the database.
@@ -29,14 +37,13 @@ router.get('/workouts', async (req, res) => {
 });
 ```
 
-
 ## Technologies
 
 - [Javascript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 - [Node.js](https://nodejs.org/en/docs/)
 - [Express](https://expressjs.com/)
 - [MongoDB](https://www.mongodb.com/)
-
+- [Morgan](https://www.npmjs.com/package/morgan)
 
 
 ## Contact Links
